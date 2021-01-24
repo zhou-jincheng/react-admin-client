@@ -15,7 +15,7 @@ class Login extends Component {
       if(err) return
       const {username, password} = values
       const result = await reqLogin(username, password)
-      if(result.status === 1) return message.error(result.msg)
+      if(result.status !== 0) return message.error(result.msg)
       message.success('登陆成功')
       memoryUtils.user = result.data
       saveUser(result.data)
