@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { Menu, Icon } from 'antd'
 
 import './index.less'
@@ -8,9 +8,10 @@ import menuList from '../../config/menuConfig'
 
 const { SubMenu } = Menu
 
-export default class NavLeft extends Component {
+class NavLeft extends Component {
 
   getNavLeftNodes = list => {
+    const {pathname} = this.props.location
     return list.map(menu => {
       if(!menu.children) {
         // 没有下一级导航
@@ -24,6 +25,9 @@ export default class NavLeft extends Component {
         )
       }else {
         // 有下一级导航时
+        if(menu.children.findIndex(item => item.key === pathname) > -1) {
+          this.openKey = menu.key
+        }
         return (
           <SubMenu
             key={menu.key}
@@ -41,7 +45,12 @@ export default class NavLeft extends Component {
     })
   }
 
+  componentWillMount() {
+    this.menuNodes = this.getNavLeftNodes(menuList)
+  }
+
   render() {
+    const {pathname} = this.props.location
     return (
       <div className="nav-left-wrapper">
         <Link to="/" className="nav-left-header">
@@ -49,14 +58,16 @@ export default class NavLeft extends Component {
           <h1>硅谷后台</h1>
         </Link>
         <Menu
-          defaultSelectedKeys={['1']}
-          defaultOpenKeys={['sub1']}
+          selectedKeys={[pathname]}
+          defaultOpenKeys={[this.openKey]}
           mode="inline"
           theme="dark"
         >
-          {this.getNavLeftNodes(menuList)}
+          {this.menuNodes}
         </Menu>
       </div>
     )
   }
 }
+
+export default withRouter(NavLeft)
