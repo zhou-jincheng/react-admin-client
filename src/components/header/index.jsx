@@ -1,11 +1,72 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
+import './index.less'
+import memoryUtils from '../../utils/memoryUtils'
+import menuList from '../../config/menuConfig'
+import {reqGetWhether} from '../../api/index'
+import {formatTime} from '../../utils/utils'
 
-export default class Header extends Component {
+class Header extends Component {
+  state = {
+    time: '',
+    city: '',
+    whether: ''
+  }
+  
+  getTitle = list => {
+    const {pathname} = this.props.location
+    let title = ''
+    list.forEach(menu => {
+        if(menu.key === pathname) {
+          title = menu.title
+        }else if(menu.children){
+        const child = menu.children.find(item => item.key === pathname)
+        if(child) title = child.title
+      }
+    })
+    return title
+  }
+
+  getWhether = () => {
+    reqGetWhether('广州').then(res => {
+      const {city, weather} = res.lives[0]
+      this.setState({city, weather})
+    })
+  }
+
+  getTime= () => {
+    this.timer = setInterval(()=> {
+      this.setState({time: formatTime(Date.now())})
+    }, 1000)
+  }
+
+  componentDidMount() {
+    this.getWhether()
+    this.getTime()
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer)
+  }
+
+
   render() {
+    const {time, city, weather} = this.state
+    const title = this.getTitle(menuList)
     return (
-      <div>
-        这是头部
+      <div className="header-wrapper">
+        <div className="header-top">欢迎 {memoryUtils.user.username}<span>退出</span></div>
+        <div className="header-bottom">
+          <div className="header-bottom-left">{title}</div>
+          <div className="header-bottom-right">
+            <span>{time}</span>
+            <span className="city">{city}</span>
+            <span className="whether">{weather}</span>
+          </div>
+        </div>
       </div>
     )
   }
 }
+
+export default withRouter(Header)
