@@ -11,3 +11,10 @@ export const reqGetWhether = city => ajax('https://restapi.amap.com/v3/weather/w
     extensions: 'base'
   }
 )
+
+// 获取商品列表
+export const reqCategoryList = parentId => ajax('http://localhost:5000/manage/category/list',
+  {
+    parentId
+  }
+)
