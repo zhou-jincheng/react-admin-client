@@ -29,11 +29,19 @@ export const reqAddCategory = (parentId, categoryName) => ajax('http://localhost
 )
 
 
-// 修改商品分类列表
+// 修改商品分类
 export const reqModifyCategory = (categoryId, categoryName) => ajax('http://localhost:5000/manage/category/update',
   {
     categoryId,
     categoryName
   },
   'post'
+)
+
+// 获取商品列表
+export const reqProductList = (pageNum, pageSize) => ajax('http://localhost:5000/manage/product/list',
+  {
+    pageNum,
+    pageSize
+  }
 )

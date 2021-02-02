@@ -11,7 +11,8 @@ const { SubMenu } = Menu
 class NavLeft extends Component {
 
   getNavLeftNodes = list => {
-    const {pathname} = this.props.location
+    let {pathname} = this.props.location || ''
+    pathname = pathname.match(/\/[a-z]+/)[0]
     return list.map(menu => {
       if(!menu.children) {
         // 没有下一级导航
@@ -50,7 +51,8 @@ class NavLeft extends Component {
   }
 
   render() {
-    const {pathname} = this.props.location
+    let {pathname} = this.props.location || ''
+    pathname = pathname.match(/\/[a-z]+/)[0]
     return (
       <div className="nav-left-wrapper">
         <Link to="/" className="nav-left-header">
