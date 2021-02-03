@@ -8,7 +8,7 @@ import {
   Table
 } from 'antd'
 import LinkButton from '../../components/link-button'
-import {reqProductList} from '../../api'
+import {reqProductList, reqProductsByKeywords} from '../../api'
 import {PAGE_SIZE} from '../../utils/constant'
 
 const Option = Select.Option
@@ -16,7 +16,10 @@ export default class ProductHome extends Component {
   state = {
     productList: [],
     total: 0,
-    loading: false
+    loading: false,
+    // 0 为根据商品名称搜索, 1 为根据商品描述搜索
+    searchType: 0,
+    keywords: '',
   }
 
   getProductList = async (pageNum = 1, pageSize = 3) => {
@@ -31,15 +34,27 @@ export default class ProductHome extends Component {
     }
   }
 
+  // 根据条件进行商品搜索
+  searchByKeywords = async () => {
+    let {keywords, searchType} = this.state
+    searchType = searchType === 0 ? 'productName' : 'productDesc'
+    const res = await reqProductsByKeywords(1, PAGE_SIZE, searchType, keywords)
+    this.setState({productList: res.data.list, total: res.data.total})
+  }
+
     init = () => {
       this.title = (
         <span>
-          <Select value="0">
-            <Option value="0">按名称搜索</Option>
-            <Option value="1">按描述搜索</Option>
+          <Select defaultValue={this.state.searchType} onChange={(value) => this.setState({searchType: value})}>
+            <Option value={0}>按名称搜索</Option>
+            <Option value={1}>按描述搜索</Option>
           </Select>
-          <Input placeholder="关键字" style={{width: 150, margin: '0 15px'}}/>
-          <Button type="primary">搜索</Button>
+          <Input 
+            placeholder="关键字" 
+            style={{width: 150, margin: '0 15px'}}
+            onChange={(e) => this.setState({keywords: e.target.value})}
+          />
+          <Button type="primary" onClick={this.searchByKeywords}>搜索</Button>
         </span>
       )
       this.extra = (
@@ -107,6 +122,7 @@ export default class ProductHome extends Component {
           columns={this.columns} 
           dataSource={productList}
           bordered
+          rowKey="_id"
           loading={loading}
           pagination={{
             pageSize: PAGE_SIZE,

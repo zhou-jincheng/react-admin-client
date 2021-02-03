@@ -167,6 +167,7 @@ export default class Catogory extends Component {
           dataSource={parentId === '0' ? categoryList : subCategoryList}
           columns={this.columns}
           bordered
+          rowKey="_id"
           loading={loading}
           pagination={{
             pageSize: 5,
