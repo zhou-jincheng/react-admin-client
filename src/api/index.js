@@ -62,3 +62,15 @@ export const reqProductsByKeywords = (pageNum, pageSize, searchType, keywords) =
     [searchType]: keywords,
   }
 )
+/**
+ * 对商品进行上架/下架处理
+ * @param {String} productId 
+ * @param {Number} status [ 1:下架 | 2:上架 ]
+ */
+export const reqUpdateProductStatus = (productId, status) => ajax('/manage/product/updateStatus',
+  {
+    productId,
+    status
+  },
+  'post'
+)
