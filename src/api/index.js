@@ -62,12 +62,31 @@ export const reqProductsByKeywords = (pageNum, pageSize, searchType, keywords) =
     [searchType]: keywords,
   }
 )
+
+/**
+ * 根据分类id获取分类信息
+ * @param {String} categoryId 分类Id
+ */
+export const reqCategoryById = (categoryId) => ajax('/manage/category/info',
+  {
+    categoryId
+  }
+)
+
 /**
  * 对商品进行上架/下架处理
  * @param {String} productId 
  * @param {Number} status [ 1:下架 | 2:上架 ]
  */
 export const reqUpdateProductStatus = (productId, status) => ajax('/manage/product/updateStatus',
+  {
+    productId,
+    status
+  },
+  'post'
+)
+
+export const reqUploadImages = (productId, status) => ajax('/manage/product/updateStatus',
   {
     productId,
     status

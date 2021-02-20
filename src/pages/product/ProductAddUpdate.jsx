@@ -45,11 +45,16 @@ class ProductAddUpdate extends Component {
     console.log(files)
   }
 
+  // 返回上一级
+  back = () => {
+    this.props.history.goBack()
+  }
+
   componentWillMount() {
     this.title = (
       <span>
-        <LinkButton>
-          <Icon type="arrow-left"/>
+        <LinkButton onClick={this.back}>
+          <Icon type="arrow-left" style={{fontSize: 20, marginRight: 10}}/>
         </LinkButton>
         <span>添加商品</span>
       </span>

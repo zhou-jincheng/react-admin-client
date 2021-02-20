@@ -105,8 +105,8 @@ export default class ProductHome extends Component {
         width: 100,
         render: product => (
           <div>
-            <LinkButton onClick={this.showProductDetail}>详情</LinkButton>
-            <LinkButton onClick={this.addOrUpdateProduct}>修改</LinkButton>
+            <LinkButton onClick={() => this.showProductDetail(product)}>详情</LinkButton>
+            <LinkButton onClick={() => this.addOrUpdateProduct(product)}>修改</LinkButton>
           </div>
         ),
       },
@@ -115,8 +115,8 @@ export default class ProductHome extends Component {
   }
 
   // 展示商品详细信息
-  showProductDetail = () => {
-    this.props.history.push('/product/detail')
+  showProductDetail = (product) => {
+    this.props.history.push('/product/detail', { product })
   }
   
   // 添加或修改商品
