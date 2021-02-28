@@ -68,7 +68,7 @@ export default class ProductHome extends Component {
       </span>
     )
     this.extra = (
-      <Button type="primary" onClick={this.addOrUpdateProduct}>
+      <Button type="primary" onClick={() => this.props.history.push('/product/addupdate')}>
         <Icon type="plus" />
         <span>添加商品</span>
       </Button>
@@ -105,8 +105,8 @@ export default class ProductHome extends Component {
         width: 100,
         render: product => (
           <div>
-            <LinkButton onClick={() => this.showProductDetail(product)}>详情</LinkButton>
-            <LinkButton onClick={() => this.addOrUpdateProduct(product)}>修改</LinkButton>
+            <LinkButton onClick={() => this.props.history.push('/product/detail', {product})}>详情</LinkButton>
+            <LinkButton onClick={() => this.props.history.push('/product/addupdate', product)}>修改</LinkButton>
           </div>
         ),
       },
@@ -117,12 +117,6 @@ export default class ProductHome extends Component {
   // 展示商品详细信息
   showProductDetail = (product) => {
     this.props.history.push('/product/detail', { product })
-  }
-  
-  // 添加或修改商品
-  addOrUpdateProduct = (productId) => {
-    this.props.history.push('/product/addupdate')
-    console.log(123);
   }
 
   componentWillMount() {

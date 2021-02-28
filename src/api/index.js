@@ -86,10 +86,33 @@ export const reqUpdateProductStatus = (productId, status) => ajax('/manage/produ
   'post'
 )
 
-export const reqUploadImages = (productId, status) => ajax('/manage/product/updateStatus',
+/**
+ * 删除图片
+ * @param {string} name 图片名
+ */
+export const reqDeleteImage = name => ajax('/manage/img/delete',
   {
-    productId,
-    status
+    name
   },
+  'post'
+)
+
+/**
+ * 上传图片
+ * 文件是对象，后端所对应的字段名应在文件对象中设置
+ * @param {File} image 图片文件
+ */
+export const reqUploadImage = image => ajax('/manage/img/upload',
+  image,
+  'post'
+)
+
+/**
+ * 添加/修改商品
+ * @param {object} product 商品对象
+ */
+export const reqAddOrUploadProduct = 
+  product => ajax('/manage/product/' + (product._id ? 'update': 'add'),
+  product,
   'post'
 )

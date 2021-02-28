@@ -4,45 +4,132 @@ import {
   Form,
   Input,
   Icon,
-  Upload,
   Cascader,
-  message
+  message,
+  Button
 } from 'antd'
-import {reqCategoryList} from '../../api'
+import {reqCategoryList, reqAddOrUploadProduct} from '../../api'
 import LinkButton from '../../components/link-button'
+import PicturesWall from './PicturesWall'
+import RichTextEditor from './RichTextEditor'
 
 const { TextArea } = Input
 class ProductAddUpdate extends Component {
-  state = {
-    //图片是否在加载
-    loading: false,
-    categoryList: []
+
+  constructor(props) {
+    super(props)
+    this.picturesWallRef = React.createRef()
+    this.detailRef = React.createRef()
+    this.state = {
+      //图片是否在加载
+      loading: false,
+      categoryList: [],
+    }
   }
 
-  // 表单提交处理事件
-  handleSubmit = () => {
-    console.log('表单提交');
+  
+
+  // 价格自定义校验
+  validatePrice = (rule, value, callback) => {
+    if(value > 0) {
+      callback()
+    } else {
+      callback('价格必须大于0')
+    }
+  }
+
+  
+  // 添加或修改商品
+  addOrUpdateProduct = () => {
+    this.props.form.validateFields(async (errors, values) => {
+      if(errors) return
+      const {name, desc, price, categoryIds} = values
+      const {_id} = this.product
+      let pCategoryId = '0'
+      let categoryId
+      if(categoryIds.length === 1) {// 一级分类
+        categoryId = categoryIds[0]
+      }else {// 二级分类
+        pCategoryId = categoryIds[0]
+        categoryId = categoryIds[1]
+      }
+      const detail = this.detailRef.current.getDetail()
+      const imgs = this.picturesWallRef.current.getImgsNames()
+      const product = {
+        _id,
+        categoryId,
+        pCategoryId,
+        name,
+        desc,
+        price,
+        detail,
+        imgs
+      }
+      const result = await reqAddOrUploadProduct(product)
+      if(result.status === 0) {
+        message.success(_id ? '修改商品成功' : '添加商品成功')
+        this.props.history.replace('/product')
+      }else {
+        message.error(_id ? '修改商品失败' : '添加商品失败')
+      }
+    })
   }
 
   // 动态加载二级分类
   loadData = async selectedOptions => {
     const targetOption = selectedOptions[selectedOptions.length - 1];
     targetOption.loading = true;
-    const res = await reqCategoryList(targetOption._id)
-    if(res.status === 0) {
-      targetOption.loading = false;
-      targetOption.children = res.data
-      const {categoryList} = this.state
-      const index = categoryList.findIndex(category => category._id === targetOption._id)
-      categoryList.splice(index, 1, targetOption)
-      this.setState({
-        categoryList
-      });
+    const children = await this.getCategoryList(targetOption.value)
+    targetOption.loading = false;
+    const categoryList = [...this.state.categoryList]
+    const category = categoryList.find(category => category.value === targetOption.value)
+    if(children.length > 0) { // 二级列表
+      category.children = children
+    }else {
+      category.isLeaf = true
     }
+    this.setState({
+      categoryList
+    });
   };
 
-  uploadImages = (files) => {
-    console.log(files)
+  // 获取商品分类列表
+  async getCategoryList(parentId) {
+    const result = await reqCategoryList(parentId)
+    if(result.status !== 0) return message.error('获取商品分类列表失败')
+    let categoryList = []
+    if(parentId === '0') {
+      // 获取一级分类列表
+      categoryList = result.data.map(c => {
+        return {
+          label: c.name,
+          value: c._id,
+          isLeaf: false
+        }
+      })
+    }else {
+      // 获取二级分类列表
+      categoryList = result.data.map(c => ({
+        label: c.name,
+        value: c._id,
+        isLeaf: true
+      }))
+    }
+    return categoryList
+  }
+
+  
+  // 初始化商品分类
+  initCategoryList = async () => {
+    const { pCategoryId } = this.product
+    let categoryList  = await this.getCategoryList('0')
+    if(this.isUpdate && pCategoryId !== '0') {
+      // 修改商品
+      const subCategoryList = await this.getCategoryList(pCategoryId)
+      const category = categoryList.find(item => item.value === pCategoryId)
+      category.children = subCategoryList
+    }
+    this.setState({categoryList})
   }
 
   // 返回上一级
@@ -50,51 +137,55 @@ class ProductAddUpdate extends Component {
     this.props.history.goBack()
   }
 
-  componentWillMount() {
+  // 初始化页面结构相关配置
+  init = () => {
+    // 卡片标题部分
     this.title = (
       <span>
         <LinkButton onClick={this.back}>
           <Icon type="arrow-left" style={{fontSize: 20, marginRight: 10}}/>
         </LinkButton>
-        <span>添加商品</span>
+        <span>{this.isUpdate ? '修改商品' : '添加商品'}</span>
       </span>
     )
-
+    // 表单项宽度设置
     this.formItemLayout = {
       labelCol: { span: 2 },
       wrapperCol: { span: 8 },
     }
-
-    // Cascader 自定义字段名
-    this.fieldNames={ label: 'name', value: '_id' }
   }
 
-  componentDidMount() {
-    reqCategoryList('0').then(res => {
-      if(res.status === 0) {
-        let categoryList = res.data || []
-        categoryList.forEach(category => category.isLeaf = false)
-        this.setState({categoryList})
-      }else {
-        message.error('获取分类列表失败！')
-      }
-    })
+  componentWillMount() {
+    const product = this.props.location.state
+    this.isUpdate = !!product
+    this.product = product || {}
+    this.init()
+  }
+
+  async componentDidMount() {
+    this.initCategoryList()
   }
 
   render() {
     const { getFieldDecorator } = this.props.form
     const {categoryList} = this.state
-    const uploadButton = (
-      <div>
-        <Icon type={this.state.loading ? 'loading' : 'plus'} />
-        <div className="ant-upload-text">Upload</div>
-      </div>
-    );
+    
+    const { name, desc, price, pCategoryId, categoryId, imgs, detail} = this.product
+    let categoryIds = []
+    if(this.isUpdate) {
+      if(pCategoryId === '0') {
+        categoryIds.push(categoryId)
+      }else {
+        categoryIds.push(pCategoryId)
+        categoryIds.push(categoryId)
+      }
+    }
     return (
       <Card title={this.title}>
-        <Form {...this.formItemLayout} onSubmit={this.handleSubmit}>
+        <Form {...this.formItemLayout}>
           <Form.Item label="商品名称">
             {getFieldDecorator('name', {
+              initialValue: name,
               rules: [
                 {
                   required: true,
@@ -105,6 +196,7 @@ class ProductAddUpdate extends Component {
           </Form.Item>
           <Form.Item label="商品描述">
             {getFieldDecorator('desc', {
+              initialValue: desc,
               rules: [
                 {
                   required: true,
@@ -118,11 +210,15 @@ class ProductAddUpdate extends Component {
           </Form.Item>
           <Form.Item label="商品价格">
             {getFieldDecorator('price', {
+              initialValue: price,
               rules: [
                 {
                   required: true,
                   message: '商品价格不能为空！',
                 },
+                {
+                  validator: this.validatePrice
+                }
               ],
             })(<Input 
                 type="number" 
@@ -130,7 +226,8 @@ class ProductAddUpdate extends Component {
                 placeholder="请输入商品价格"/>)}
           </Form.Item>
           <Form.Item label="商品分类">
-            {getFieldDecorator('categoryId', {
+            {getFieldDecorator('categoryIds', {
+              initialValue: categoryIds,
               rules: [
                 {
                   required: true,
@@ -138,29 +235,22 @@ class ProductAddUpdate extends Component {
                 },
               ],
             })(<Cascader
-                  fieldNames={this.fieldNames}
                   options={categoryList}
                   loadData={this.loadData}
                   onChange={this.handleCategoryChange}
                   changeOnSelect/>)}
           </Form.Item>
           <Form.Item label="商品图片">
-            <Upload
-              name="imgs"
-              listType="picture-card"
-              className="avatar-uploader"
-              showUploadList={false}
-              multiple
-              customRequest={this.uploadImages}
-            >
-              {uploadButton}
-            </Upload>
+            <PicturesWall ref={this.picturesWallRef} imgs={imgs}/>
           </Form.Item>
-          <Form.Item label="商品详情">
-            {getFieldDecorator('detail')(<Input placeholder="请输入商品价格"/>)}
+          <Form.Item label="商品详情" labelCol={{ span: 2 }} wrapperCol={{ span: 20 }}>
+            <RichTextEditor ref={this.detailRef} detail={detail}/>
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" onClick={this.addOrUpdateProduct}>提交</Button>
           </Form.Item>
         </Form>
-      </Card>
+      </Card> 
     )
   }
 }

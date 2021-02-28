@@ -6,4 +6,4 @@
 export const PAGE_SIZE = 3
 
 // 商品详情页 图片的根路径
-export const BASE_URL = 'http://localhost:5000/upload/'
+export const IMG_BASE_URL = 'http://localhost:5000/upload/'

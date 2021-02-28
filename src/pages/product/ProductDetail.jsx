@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Card, Icon, List } from 'antd'
 
 import LinkButton from '../../components/link-button'
-import { BASE_URL } from '../../utils/constant'
+import { IMG_BASE_URL } from '../../utils/constant'
 import { reqCategoryById } from '../../api'
 
 const { Item } = List
@@ -69,7 +69,7 @@ export default class ProductDetail extends Component {
           <Item>
             <span className="left">商品图片:</span>
             <span>
-              {imgs.map(imgName => <img key={imgName} src={BASE_URL + imgName} alt="商品图片"/>)}
+              {imgs.map(imgName => <img key={imgName} src={IMG_BASE_URL + imgName} alt="商品图片"/>)}
             </span>
           </Item>
           <Item>
