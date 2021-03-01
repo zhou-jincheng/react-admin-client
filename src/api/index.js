@@ -116,3 +116,14 @@ export const reqAddOrUploadProduct =
   product,
   'post'
 )
+
+/**
+ * 获取角色列表
+ */
+export const reqRoleList = () => ajax('/manage/role/list')
+
+/**
+ * 添加角色
+ * @param {string} roleName 角色名称
+ */
+export const reqAddRole = roleName => ajax('/manage/role/add',{roleName}, 'post')

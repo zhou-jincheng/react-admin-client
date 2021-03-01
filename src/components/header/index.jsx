@@ -19,7 +19,8 @@ class Header extends Component {
   
   getTitle = list => {
     let {pathname} = this.props.location
-    pathname = pathname.match(/\/\w+/)[0]
+    const path = pathname.match(/\/\w+/)
+    if(path) pathname = path[0]
     let title = ''
     list.forEach(menu => {
         if(menu.key === pathname) {
