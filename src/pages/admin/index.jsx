@@ -4,6 +4,7 @@ import { Layout } from 'antd'
 import memoryUtils from '../../utils/memoryUtils'
 import NavLeft from '../../components/nav-left'
 import Header from '../../components/header'
+import MyFooter from '../../components/footer'
 import Home from '../home'
 import Category from '../category'
 import Product from '../product'
@@ -26,13 +27,13 @@ export default class Admin extends Component {
       )
     }
     return (
-      <Layout style={{height: "100%"}}>
+      <Layout style={{minHeight: "100%"}}>
         <Sider>
           <NavLeft />
         </Sider>
         <Layout>
           <Header />
-          <Content style={{margin: "20px",backgroundColor: "#fff",height: "100px"}}>
+          <Content style={{margin: "20px",backgroundColor: "#fff",minHeight: "100px"}}>
             <Switch>
               <Route path='/home' component={Home}/>
               <Route path='/category' component={Category}/>
@@ -46,7 +47,9 @@ export default class Admin extends Component {
               <Redirect to='/home' />
             </Switch>
           </Content>
-          <Footer>Footer</Footer>
+          <Footer>
+            <MyFooter />
+          </Footer>
         </Layout>
       </Layout>
     )
