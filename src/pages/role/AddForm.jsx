@@ -5,7 +5,18 @@ import PropTypes from 'prop-types'
 class AddForm extends Component {
 
   static propTypes = {
-    setForm: PropTypes.func
+    setForm: PropTypes.func,
+    roles: PropTypes.array
+  }
+
+  validateRole = (rule, value, callback) => {
+    const {roles = []} = this.props
+    const role = roles.find(item => item.name === value)
+    if(role) {
+      callback('该角色已存在')
+    }else {
+      callback()
+    }
   }
 
   componentWillMount() {
@@ -31,6 +42,9 @@ class AddForm extends Component {
               {
                 required: true,
                 message: '请输入角色名称',
+              },
+              {
+                validator: this.validateRole
               }
             ],
           })(<Input />)}

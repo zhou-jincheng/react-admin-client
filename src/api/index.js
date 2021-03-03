@@ -126,4 +126,10 @@ export const reqRoleList = () => ajax('/manage/role/list')
  * 添加角色
  * @param {string} roleName 角色名称
  */
-export const reqAddRole = roleName => ajax('/manage/role/add',{roleName}, 'post')
+export const reqAddRole = roleName => ajax('/manage/role/add', {roleName}, 'post')
+
+/**
+ * 更新角色，例如给角色设置权限
+ * @param {object} role 角色对象
+ */
+export const reqUpdateRole = role => ajax('/manage/role/update', role, 'post')
