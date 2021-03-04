@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import {Form, Input, Tree} from 'antd'
 import PropTypes from 'prop-types'
 
@@ -6,7 +6,7 @@ import menuList from '../../config/menuConfig'
 
 const { TreeNode } = Tree
 
-export default class AuthorityForm extends Component {
+export default class AuthorityForm extends PureComponent {
 
   static propTypes = {
     role: PropTypes.object
