@@ -133,3 +133,14 @@ export const reqAddRole = roleName => ajax('/manage/role/add', {roleName}, 'post
  * @param {object} role 角色对象
  */
 export const reqUpdateRole = role => ajax('/manage/role/update', role, 'post')
+
+/**
+ * 获取用户列表
+ */
+export const reqUserList = () => ajax('/manage/user/list')
+
+/**
+ * 添加用户
+ * @param {Object} user 用户对象
+ */
+export const reqAddUser = user => ajax('/manage/user/add', user, 'post')
