@@ -10,6 +10,7 @@ import {reqRoleList, reqAddRole, reqUpdateRole} from '../../api'
 import {PAGE_SIZE} from '../../utils/constant'
 import memoryUtils from '../../utils/memoryUtils'
 import {formatTime} from '../../utils/utils'
+import {reomveUser} from '../../utils/storageUtils'
 
 
 import AddForm from './AddForm'
@@ -108,9 +109,16 @@ export default class Role extends Component {
     role.auth_time = Date.now()
     role.auth_name = memoryUtils.user.username
     const result = await reqUpdateRole(role)
-    if(result.status === 0) {
-      this.setState({authorityModalVisible: false})
-      return message.success('设置角色权限成功')
+    if (result.status === 0) {
+      if (role._id === memoryUtils.user.role._id) {
+        memoryUtils.user = null
+        reomveUser()
+        this.props.history.replace('/login')
+        return message.success('当前角色权限已更改，请重新登陆')
+      } else {
+        this.setState({authorityModalVisible: false})
+        return message.success('设置角色权限成功')
+      }
     }
     return message.error('设置角色权限失败')
   }
