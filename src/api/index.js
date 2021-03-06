@@ -144,3 +144,15 @@ export const reqUserList = () => ajax('/manage/user/list')
  * @param {Object} user 用户对象
  */
 export const reqAddUser = user => ajax('/manage/user/add', user, 'post')
+
+/**
+ * 更新用户
+ * @param {Object} user 用户对象
+ */
+export const reqUpdateUser = user => ajax('/manage/user/update', user, 'post')
+
+/**
+ * 删除用户
+ * @param {String} userId 用户Id
+ */
+export const reqDeleteUserById = userId => ajax('/manage/user/delete', {userId}, 'post')

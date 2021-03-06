@@ -36,12 +36,13 @@ class AddOrUpdateForm extends PureComponent {
   }
 
   render() {
-    const { roleList=[] } = this.props
+    const { roleList=[], user={} } = this.props
     const { getFieldDecorator } =  this.props.form
     return (
       <Form {...this.formItemLayout}>
         <Form.Item label="用户名">
           {getFieldDecorator('username', {
+            initialValue: user.username,
             rules: [
               {
                 required: true,
@@ -50,18 +51,26 @@ class AddOrUpdateForm extends PureComponent {
             ]
           })(<Input placeholder="请输入用户名" />)}
         </Form.Item>
-        <Form.Item label="密码">
-          {getFieldDecorator('password', {
-            rules: [
-              {
-                required: true,
-                message: '密码不能为空',
-              }
-            ]
-          })(<Input.Password placeholder="请输入密码" />)}
-        </Form.Item>
+        {
+          user.password
+          ? null
+          : (
+              <Form.Item label="密码">
+                {getFieldDecorator('password', {
+                  initialValue: user.password,
+                  rules: [
+                    {
+                      required: true,
+                      message: '密码不能为空',
+                    }
+                  ]
+                })(<Input.Password placeholder="请输入密码" />)}
+              </Form.Item>
+            )
+        }
         <Form.Item label="手机号">
           {getFieldDecorator('phone', {
+            initialValue: user.phone,
             rules: [
               {
                 validator: this.validatePhone
@@ -70,10 +79,14 @@ class AddOrUpdateForm extends PureComponent {
           })(<Input />)}
         </Form.Item>
         <Form.Item label="邮箱">
-          {getFieldDecorator('email')(<Input />)}
+          {getFieldDecorator('email', {
+            initialValue: user.email,
+          })(<Input />)}
         </Form.Item>
         <Form.Item label="角色">
-          {getFieldDecorator('role_id')(
+          {getFieldDecorator('role_id', {
+            initialValue: user.role_id,
+          })(
             <Select>
               {
                 roleList.map(role => <Option value={role._id} key={role._id}>{role.name}</Option>)
