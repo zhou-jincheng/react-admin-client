@@ -85,7 +85,7 @@ export default class User extends Component {
   addOrUpdateUser = () => {
     this.form.validateFields((errors, value) => {
       if(errors) return
-      if (!this.isUpdate) {
+      if (!this.user) {
         this.addUser(value)
       } else {
         this.updateUser(value)
@@ -108,21 +108,13 @@ export default class User extends Component {
   }
 
   addClick = () => {
-    this.isUpdate = false
+    this.user = null
     this.setState({showModal: true})
   }
 
   updateClick = user => {
-    this.isUpdate = true
     this.user = user // 保存要修改的用户信息
     this.setState({showModal: true})
-  }
-
-  cancelClick = () => {
-    this.setState({showModal: false},() => {
-      this.user = {}
-    })
-    this.form.resetFields()
   }
 
   updateUser = async user => {
@@ -139,8 +131,6 @@ export default class User extends Component {
       this.setState({
         userList,
         showModal: false
-      }, () => {
-        this.user = {}
       })
       this.form.resetFields()
     } else {
@@ -181,6 +171,7 @@ export default class User extends Component {
 
   render() {
     const { userList, showModal, roleList } = this.state
+    const user = this.user
     return (
       <>
         <Card title={this.title}>
@@ -195,10 +186,10 @@ export default class User extends Component {
           />
         </Card>
         <Modal
-        title={this.isUpdate ? "修改用户" : "添加用户"}
+        title={user ? "修改用户" : "添加用户"}
         visible={showModal}
         onOk={this.addOrUpdateUser}
-        onCancel={this.cancelClick}
+        onCancel={() => this.setState({showModal: false})}
         okText="确认"
         cancelText="取消"
         >

@@ -36,7 +36,8 @@ class AddOrUpdateForm extends PureComponent {
   }
 
   render() {
-    const { roleList=[], user={} } = this.props
+    const { roleList=[] } = this.props
+    const user = this.props.user || {}
     const { getFieldDecorator } =  this.props.form
     return (
       <Form {...this.formItemLayout}>
