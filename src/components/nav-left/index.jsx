@@ -14,8 +14,10 @@ class NavLeft extends Component {
   hasAuth = menu => {
     const userMenus = memoryUtils.user.role.menus || []
     const username = memoryUtils.user.username
-    if(username === 'admin' || menu.isPublic || userMenus.includes(menu.key)) {
+    if (username === 'admin' || menu.isPublic || userMenus.includes(menu.key)) {
       return true
+    } else if (menu.children) {
+      return menu.children.some(item => userMenus.includes(item.key))
     }
     return false
   }
