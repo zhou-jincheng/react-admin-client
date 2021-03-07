@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import { Menu, Icon } from 'antd'
+import {connect} from 'react-redux'
 
 import './index.less'
 import logo from '../../assets/images/logo.png'
 import menuList from '../../config/menuConfig'
 import memoryUtils from '../../utils/memoryUtils'
+import { setHeadTitle } from '../../redux/actions'
 
 const { SubMenu } = Menu
 
@@ -24,13 +26,15 @@ class NavLeft extends Component {
 
   getNavLeftNodes = list => {
     let {pathname} = this.props.location || ''
-    pathname = (pathname.match(/\/[a-z]+/) && pathname.match(/\/[a-z]+/)[0]) || '/'
     return list.map(menu => {
       if(this.hasAuth(menu)) {
         if(!menu.children) {
           // 没有下一级导航
+          if(menu.key === pathname || menu.key.indexOf(pathname) === 0) {
+            this.props.setHeadTitle(menu.title)
+          }
           return (
-            <Menu.Item key={menu.key}>
+            <Menu.Item key={menu.key} onClick={() => this.props.setHeadTitle(menu.title)}>
               <Link to={menu.key}>
                 <Icon type={menu.icon} />
                 <span>{menu.title}</span>
@@ -39,7 +43,7 @@ class NavLeft extends Component {
           )
         }else {
           // 有下一级导航时
-          if(menu.children.findIndex(item => item.key === pathname) > -1) {
+          if(menu.children.some(item => item.key.indexOf(pathname) === 0)) {
             this.openKey = menu.key
           }
           return (
@@ -68,7 +72,6 @@ class NavLeft extends Component {
 
   render() {
     let {pathname} = this.props.location || ''
-    pathname = (pathname.match(/\/[a-z]+/) && pathname.match(/\/[a-z]+/)[0]) || '/'
     return (
       <div className="nav-left-wrapper">
         <Link to="/" className="nav-left-header">
@@ -88,4 +91,9 @@ class NavLeft extends Component {
   }
 }
 
-export default withRouter(NavLeft)
+export default connect(
+  state => ({}),
+  {
+    setHeadTitle
+  }
+)(withRouter(NavLeft))

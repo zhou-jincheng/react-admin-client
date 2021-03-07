@@ -19,7 +19,7 @@ class Login extends Component {
       message.success('登陆成功')
       memoryUtils.user = result.data
       saveUser(result.data)
-      this.props.history.replace('/')
+      this.props.history.replace('/home')
     })
   }
 

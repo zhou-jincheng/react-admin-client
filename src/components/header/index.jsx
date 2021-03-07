@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Modal } from 'antd'
+import {connect} from 'react-redux'
+
 import './index.less'
 import memoryUtils from '../../utils/memoryUtils'
-import menuList from '../../config/menuConfig'
 import {reqGetWhether} from '../../api/index'
 import {formatTime} from '../../utils/utils'
 import LinkButton from '../../components/link-button'
@@ -17,7 +18,7 @@ class Header extends Component {
     whether: ''
   }
   
-  getTitle = list => {
+  /* getTitle = list => {
     let {pathname} = this.props.location
     const path = pathname.match(/\/\w+/)
     if(path) pathname = path[0]
@@ -31,7 +32,7 @@ class Header extends Component {
       }
     })
     return title
-  }
+  } */
 
   getWhether = () => {
     reqGetWhether('广州').then(res => {
@@ -73,7 +74,7 @@ class Header extends Component {
 
   render() {
     const {time, city, weather} = this.state
-    const title = this.getTitle(menuList)
+    const title = this.props.headTitle
     return (
       <div className="header-wrapper">
         <div className="header-top">欢迎 {memoryUtils.user.username}<LinkButton onClick={this.logout}>退出</LinkButton></div>
@@ -90,4 +91,7 @@ class Header extends Component {
   }
 }
 
-export default withRouter(Header)
+export default connect(
+  state => ({headTitle: state.headTitle}),
+  {}
+)(withRouter(Header))
