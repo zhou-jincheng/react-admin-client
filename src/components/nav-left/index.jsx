@@ -26,7 +26,7 @@ class NavLeft extends Component {
   }
 
   getNavLeftNodes = list => {
-    let {pathname} = this.props.location || ''
+    const {pathname} = this.props.location || ''
     return list.map(menu => {
       if(this.hasAuth(menu)) {
         if(!menu.children) {
@@ -44,7 +44,7 @@ class NavLeft extends Component {
           )
         }else {
           // 有下一级导航时
-          if(menu.children.some(item => item.key.indexOf(pathname) === 0)) {
+          if(pathname !== '/' && menu.children.some(item => item.key.indexOf(pathname) === 0)) {
             this.openKey = menu.key
           }
           return (
