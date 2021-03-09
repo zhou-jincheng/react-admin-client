@@ -4,11 +4,11 @@ import { Modal } from 'antd'
 import {connect} from 'react-redux'
 
 import './index.less'
-import memoryUtils from '../../utils/memoryUtils'
 import {reqGetWhether} from '../../api/index'
 import {formatTime} from '../../utils/utils'
 import LinkButton from '../../components/link-button'
 import {reomveUser} from '../../utils/storageUtils'
+import { logout } from '../../redux/actions'
 const { confirm } = Modal
 
 class Header extends Component {
@@ -55,7 +55,7 @@ class Header extends Component {
       cancelText: "取消",
       onOk: () => {
         reomveUser()
-        memoryUtils.user = null
+        this.props.logout()
         this.props.history.replace('/login')
       },
       onCancel() {},
@@ -77,7 +77,7 @@ class Header extends Component {
     const title = this.props.headTitle
     return (
       <div className="header-wrapper">
-        <div className="header-top">欢迎 {memoryUtils.user.username}<LinkButton onClick={this.logout}>退出</LinkButton></div>
+        <div className="header-top">欢迎 {this.props.user.username}<LinkButton onClick={this.logout}>退出</LinkButton></div>
         <div className="header-bottom">
           <div className="header-bottom-left">{title}</div>
           <div className="header-bottom-right">
@@ -92,6 +92,6 @@ class Header extends Component {
 }
 
 export default connect(
-  state => ({headTitle: state.headTitle}),
-  {}
+  state => ({headTitle: state.headTitle, user: state.user}),
+  { logout }
 )(withRouter(Header))

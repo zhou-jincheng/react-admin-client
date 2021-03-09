@@ -19,16 +19,40 @@
     }
   }
   .login-content {
+    position: relative;
     width: 400px;
     height: 300px;
     margin: 15vh auto;
     background-color: #fff;
-    padding: 15px 30px; 
+    overflow: hidden;
+    // padding: 15px 30px; 
+    .error-msg {
+      visibility: hidden;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      line-height: 30px;
+      background-color: red;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      transform: translateY(-30px);
+      transition: all .5s;
+      &.show {
+        visibility: visible;
+        transform: translateY(0);
+      }
+    }
     h2 {
       text-align: center;
       font-size: 26px;
       font-weight: 700;
-      margin-bottom: 24px;
+      margin: 25px;
+    }
+    .login-form {
+      margin: 0 30px;
     }
     .ant-form-item-control {
       line-height: 12px;

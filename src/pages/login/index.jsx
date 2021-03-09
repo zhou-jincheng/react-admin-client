@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
+import { Form, Icon, Input, Button } from 'antd';
+import { connect } from 'react-redux'
+
 import './index.less'
 import logo from '../../assets/images/logo.png'
-import { Form, Icon, Input, Button, message } from 'antd';
-import {reqLogin} from '../../api/index'
-import memoryUtils from '../../utils/memoryUtils'
-import {saveUser} from '../../utils/storageUtils'
+import { login } from '../../redux/actions'
+import { Redirect } from 'react-router-dom';
 
 class Login extends Component {
   // 请求登陆
@@ -14,17 +15,17 @@ class Login extends Component {
     form.validateFields(async (err, values) => {
       if(err) return
       const {username, password} = values
-      const result = await reqLogin(username, password)
-      if(result.status !== 0) return message.error(result.msg)
-      message.success('登陆成功')
-      memoryUtils.user = result.data
-      saveUser(result.data)
-      this.props.history.replace('/home')
+      this.props.login(username, password)
+      
     })
   }
 
   render() {
-    const {getFieldDecorator} = this.props.form
+    const { getFieldDecorator } = this.props.form
+    const user = this.props.user
+    if (user && user._id) {
+      return <Redirect to="/" />
+    }
     return (
       <div className="login-wrapper">
         <header className="login-header">
@@ -32,6 +33,7 @@ class Login extends Component {
           <h1>React项目：后台管理系统</h1>
         </header>
         <section className="login-content">
+          <div className={ user.msg ? "error-msg show": "error-msg" } >{user.msg}</div>
           <h2>用户登录</h2>
           <Form onSubmit={this.handleSubmit} className="login-form">
             <Form.Item>
@@ -81,4 +83,7 @@ class Login extends Component {
   }
 }
 
-export default Form.create()(Login)
+export default connect(
+  state => ({user: state.user}),
+  {login}
+)(Form.create()(Login))

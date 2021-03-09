@@ -6,16 +6,17 @@ import {connect} from 'react-redux'
 import './index.less'
 import logo from '../../assets/images/logo.png'
 import menuList from '../../config/menuConfig'
-import memoryUtils from '../../utils/memoryUtils'
 import { setHeadTitle } from '../../redux/actions'
+
 
 const { SubMenu } = Menu
 
 class NavLeft extends Component {
 
   hasAuth = menu => {
-    const userMenus = memoryUtils.user.role.menus || []
-    const username = memoryUtils.user.username
+    const { user } = this.props
+    const userMenus = user.role.menus || []
+    const username = user.username
     if (username === 'admin' || menu.isPublic || userMenus.includes(menu.key)) {
       return true
     } else if (menu.children) {
@@ -92,7 +93,7 @@ class NavLeft extends Component {
 }
 
 export default connect(
-  state => ({}),
+  state => ({user: state.user}),
   {
     setHeadTitle
   }
