@@ -15,6 +15,7 @@ import Bar from '../charts/bar'
 import Line from '../charts/line'
 import Pie from '../charts/pie'
 import Order from '../order'
+import NotFind from '../404'
 
 
 const { Footer, Sider, Content } = Layout
@@ -45,7 +46,7 @@ class Admin extends Component {
               <Route path='/charts/line' component={Line}/>
               <Route path='/charts/pie' component={Pie}/>
               <Route path='/order' component={Order}/>
-              <Redirect to='/home' />
+              <Route component={NotFind}/>
             </Switch>
           </Content>
           <Footer>
