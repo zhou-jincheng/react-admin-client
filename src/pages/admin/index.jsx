@@ -37,6 +37,7 @@ class Admin extends Component {
           <Header />
           <Content style={{margin: "20px",backgroundColor: "#fff",minHeight: "100px"}}>
             <Switch>
+              <Redirect exact path='/' to='/home' />
               <Route path='/home' component={Home}/>
               <Route path='/category' component={Category}/>
               <Route path='/product' component={Product}/>
