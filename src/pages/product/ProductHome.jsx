@@ -11,6 +11,7 @@ import {
 import LinkButton from '../../components/link-button'
 import {reqProductList, reqProductsByKeywords, reqUpdateProductStatus} from '../../api'
 import {PAGE_SIZE} from '../../utils/constant'
+import memoryUtils from '../../utils/memoryUtils'
 
 const Option = Select.Option
 export default class ProductHome extends Component {
@@ -105,8 +106,8 @@ export default class ProductHome extends Component {
         width: 100,
         render: product => (
           <div>
-            <LinkButton onClick={() => this.props.history.push('/product/detail', {product})}>详情</LinkButton>
-            <LinkButton onClick={() => this.props.history.push('/product/addupdate', product)}>修改</LinkButton>
+            <LinkButton onClick={() => this.showProductDetail(product)}>详情</LinkButton>
+            <LinkButton onClick={() => this.showProductModify(product)}>修改</LinkButton>
           </div>
         ),
       },
@@ -116,7 +117,14 @@ export default class ProductHome extends Component {
 
   // 展示商品详细信息
   showProductDetail = (product) => {
-    this.props.history.push('/product/detail', { product })
+    memoryUtils.product = product
+    this.props.history.push('/product/detail')
+  }
+
+  // 展示商品修改界面
+  showProductModify = (product) => {
+    memoryUtils.product = product
+    this.props.history.push('/product/addupdate')
   }
 
   componentWillMount() {

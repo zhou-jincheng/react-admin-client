@@ -12,6 +12,7 @@ import {reqCategoryList, reqAddOrUploadProduct} from '../../api'
 import LinkButton from '../../components/link-button'
 import PicturesWall from './PicturesWall'
 import RichTextEditor from './RichTextEditor'
+import memoryUtils from '../../utils/memoryUtils'
 
 const { TextArea } = Input
 class ProductAddUpdate extends Component {
@@ -156,14 +157,18 @@ class ProductAddUpdate extends Component {
   }
 
   componentWillMount() {
-    const product = this.props.location.state
-    this.isUpdate = !!product
+    const product = memoryUtils.product
+    this.isUpdate = !!product._id
     this.product = product || {}
     this.init()
   }
 
   async componentDidMount() {
     this.initCategoryList()
+  }
+
+  componentWillUnmount() {
+    memoryUtils.product = {}
   }
 
   render() {

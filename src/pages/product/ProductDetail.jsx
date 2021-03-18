@@ -4,6 +4,7 @@ import { Card, Icon, List } from 'antd'
 import LinkButton from '../../components/link-button'
 import { IMG_BASE_URL } from '../../utils/constant'
 import { reqCategoryById } from '../../api'
+import memoryUtils from '../../utils/memoryUtils'
 
 const { Item } = List
 export default class ProductDetail extends Component {
@@ -24,7 +25,7 @@ export default class ProductDetail extends Component {
   }
 
   async componentDidMount() {
-    const {categoryId, pCategoryId} = this.props.location.state.product
+    const {categoryId, pCategoryId} = memoryUtils.product
     if(pCategoryId === '0') {
       const result = await reqCategoryById(categoryId)
       const cname1 = result.data.name
@@ -37,15 +38,18 @@ export default class ProductDetail extends Component {
     }
   }
 
+  componentWillUnmount() {
+    memoryUtils.product = {}
+  }
+
   render() {
-    console.log(this.props);
     const {
       desc,
       imgs,
       name,
       price,
       detail
-    } = this.props.location.state.product
+    } = memoryUtils.product
     const {cname1, cname2} = this.state
     return (
       <Card title={this.title} className="product-detail">
