@@ -6,11 +6,23 @@ import Line from './components/Line'
 import Bar from './components/Bar'
 
 export default class Home extends Component {
+  state = {
+    isVisited: true
+  }
+
+  handleChange = (boolean) => {
+    this.setState({isVisited: boolean})
+  }
+
   render() {
+    const { isVisited } = this.state
     let bottomTitle = (
-      <span>
-        <span>访问量</span>
-        <span>销售量</span>
+      <span style={{fontSize: 24}}>
+        <span 
+          style={{marginRight: 20}} 
+          className={isVisited ? 'isActived' : ''}
+          onClick={() => this.handleChange(true)}>访问量</span>
+        <span className={isVisited ? '' : 'isActived'} onClick={() =>this.handleChange(false)}>销售量</span>
       </span>
     )
     return (
@@ -42,7 +54,7 @@ export default class Home extends Component {
         <Row style={{marginTop: 50}}>
           <Card title={bottomTitle} extra={<TimePicker />}>
             <Col span={15}>
-              <Card title="销售趋势" extra={<Icon type="reload"/>} style={{height: 380}}>
+              <Card title={isVisited ? '访问量' : '销售额'} extra={<Icon type="reload"/>} style={{height: 380}}>
                   <Bar />
                 </Card>
             </Col>
