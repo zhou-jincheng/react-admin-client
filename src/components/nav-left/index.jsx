@@ -31,7 +31,7 @@ class NavLeft extends Component {
       if(this.hasAuth(menu)) {
         if(!menu.children) {
           // 没有下一级导航
-          if(menu.key === pathname || menu.key.indexOf(pathname) === 0) {
+          if(menu.key === pathname) {
             this.props.setHeadTitle(menu.title)
           }
           return (

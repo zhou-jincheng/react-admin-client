@@ -24,7 +24,7 @@ class Login extends Component {
     const { getFieldDecorator } = this.props.form
     const user = this.props.user
     if (user && user._id) {
-      return <Redirect to="/" />
+      return <Redirect to="/home" />
     }
     return (
       <div className="login-wrapper">
